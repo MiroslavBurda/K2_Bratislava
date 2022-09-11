@@ -18,8 +18,17 @@ static const uint8_t L_G_pin = rb::EB5;
 
 byte L_G_light = 0; 
 
-extern "C" void app_main()
-{
+
+
+
+std::atomic_int left_enc; 
+
+bool casovac1() {        // musí být bool, musí vracet true, může jich být 10 
+    left_enc = left_enc+1;
+    return true;
+}
+
+void setup() {
     rb::Manager m(false);  
     auto& batt = m.battery();
     batt.setCoef(8.65);
@@ -32,23 +41,6 @@ extern "C" void app_main()
     m.expander().pinMode(rb::SW1, INPUT_PULLUP);
     m.expander().pinMode(rb::SW2, INPUT_PULLUP);
     m.expander().pinMode(rb::SW3, INPUT_PULLUP);
-    setup();
-    for(;;) {
-        micros();
-        loop();
-        vTaskDelay(1/portTICK_PERIOD_MS);
-    }
-}
-
-
-std::atomic_int left_enc; 
-
-bool casovac1() {        // musí být bool, musí vracet true, může jich být 10 
-    left_enc = left_enc+1;
-    return true;
-}
-
-void setup() {
     Serial.begin (115200);
     Serial.print ("Starting.../n");
     pinMode(L_G_pin, OUTPUT); 
